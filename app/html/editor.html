@@ -77,7 +77,8 @@
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
         });
 
-        te_markdown.onkeyup = te_markdown.onpaste = content_preview;
+        window.editor_markdown.on("keyup", content_preview);
+        window.editor_markdown.on("paste", content_preview);
         window.editor_markdown.on("scroll", scroll_markdown);
 
         content_preview();
