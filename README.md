@@ -33,3 +33,8 @@ simple markdown editor
 
 [codemirror](http://codemirror.net)  是一款“Online Source Editor”，基于Javascript，短小精悍，实时在线代码高亮显示，他不是某个富文本编辑器的附属产品，他是许多大名鼎鼎的在线代码编辑器的基础库。
 
+### preview image
+
+![](https://raw.githubusercontent.com/hanxi/markdown/master/app/img/editor.png)
+![](https://raw.githubusercontent.com/hanxi/markdown/master/app/img/index.png)
+![](https://raw.githubusercontent.com/hanxi/markdown/master/app/img/page.png)
