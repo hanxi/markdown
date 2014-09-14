@@ -15,12 +15,12 @@ simple markdown editor
 * 主页有update按钮，可以更新`index.html`和转换所有已经编辑完且已经保存的m文件为html文件
 * 添加新md文件，点击add按钮
 * 需要修改某个已经编辑的文件，点击文章右边edit
+* 支持上传图片功能，模仿ghos博客的编辑器添加图片方式，详情见<https://raw.githubusercontent.com/hanxi/markdown/master/app/md/uploadimg.md>
 
 ### todo
 
 * 美化界面：包括主页，文章以及编辑器
 * 优化编辑器体验：编辑框和预览框滚动条同步
-* 添加上传图片功能，模仿ghos博客的编辑器添加图片方式
 * 添加实时保存
 * 添加发布按钮（更新单个文件），最后去掉主页那个按钮
 
