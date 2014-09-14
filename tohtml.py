@@ -37,9 +37,15 @@ mdhtml = u'''
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>markdown blog</title>
     <meta charset="utf-8">
+    <style type="text/css">
+    .navbar-fixed-top{position: fixed;top: 0;right: 0;left: 0;z-index: 1030;}
+    </style>
 </head>
 
 <body>
+<div class="navbar navbar-fixed-top">
+<a href='/'>index</a>
+</div>
 %s
 </body>
 </html>
@@ -52,9 +58,10 @@ for fname,mdcontent in fname2html.items():
     f.close()
  
 #index.html
-indexcontent = ""
+indexcontent = u"<dl>"
 for fname,title in fname2title.items():
-    indexcontent += "<li><a href='html/%s.html'>%s</a></li>" % (fname,title)
+    indexcontent += u"<dt><a href='html/%s.html'>%s</a></dt><dd><a href='editor?name=%s'>edit</dd>" % (fname,title,fname)
+indexcontent += u"</dl>"
 
 indexhtml = u'''
 <!DOCTYPE html>
@@ -63,12 +70,20 @@ indexhtml = u'''
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>markdown blog</title>
     <meta charset="utf-8">
+    <style type="text/css">
+    h4{font-size:14px; color:#333;}
+    a{color:#069;}
+    dl{ border:dashed 1px #666; font-size:14px; padding:4px; background:#FDFBDB;}
+    dt{clear:left; float:left; padding:4px 0;}
+    dd{ text-align:right;  padding:4px 0;font-size:12px; color:#666;}
+    </style>
 </head>
 
 <body>
-    <h1>首页</h1>
+    <h1>Article List</h1>
         <p>
-            <input type="button" value="更新" onclick="onupdate()">
+            <input type="button" value="update" onclick="onupdate()">
+            <input type="button" value="add" onclick="onadd()">
         </p>
     <content>
     %s
@@ -84,6 +99,9 @@ indexhtml = u'''
         };
         xmlhttp.open("POST","update",true);
         xmlhttp.send();
+    }
+    function onadd() {
+        window.location.href = '/editor';
     }
     window.onload = function() {
     };
