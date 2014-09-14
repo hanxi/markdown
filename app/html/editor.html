@@ -30,6 +30,7 @@
             background: #fdeddd;
         }
         .CodeMirror {margin: 0px; height: 600px; width: 485px;}
+        .navbar-fixed-top{position: fixed;top: 0;right: 0;left: 0;z-index: 1030;}
     </style>
 </head>
 
@@ -37,10 +38,13 @@
 
 <div style="width:1000px;margin: 0 auto;">
     <div>
+        <div class="navbar navbar-fixed-top">
+            <a href='/'>index</a>
+        </div>
         <h1>Markdown</h1> 
         <p>
-            文件名: <input type="text" id="mdname">
-            <input type="button" value="保存" onclick="onsave()">
+            <input type="text" id="mdname" placeholder="input file name">
+            <input type="button" value="save" onclick="onsave()">
         </p>
     </div>
     <form>
@@ -59,6 +63,8 @@
     function content_preview() {
         var converter = new Showdown.converter();
         var html = converter.makeHtml(window.editor_markdown.getValue());
+        // add click to upload img
+        html = html.replace(/!<a href/g,"<input type='file' id='upload' accept='image/*'><input type='button' value='upload' onclick='uploadimg()'><a href");
         _('preview').innerHTML = html;
     }
     function scroll_markdown(){
@@ -86,6 +92,31 @@
         var text = window.editor_markdown.getValue();
         var post = "name="+md+"&mdtext="+encodeURIComponent(text);
         xmlhttp.send(post);
+    }
+    function uploadimg() {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                var imagename = xmlhttp.responseText;
+                var mdtext = window.editor_markdown.getValue();
+                mdtext = mdtext.replace(/!\[\]\(\)/g,'![](img/'+imagename+')');
+                window.editor_markdown.setValue(mdtext);
+                content_preview();
+                alert('upload '+imagename+' success');
+            } else if (xmlhttp.readyState==4 && xmlhttp.status==400) {
+                alert(xmlhttp.responseText);
+            }
+        };
+        var fileObj = _("upload").files[0];
+        if (fileObj) {
+            console.log(fileObj);
+            var form = new FormData();
+            form.append("file", fileObj);
+            xmlhttp.open("POST","uploadimg",true);
+            xmlhttp.send(form);
+        } else {
+            alert('please select image before click upload');
+        }
     }
 
     function get_markdown() {

@@ -146,7 +146,7 @@ this.makeHtml = function(text) {
 
 	// attacklab: Restore tildes
 	text = text.replace(/~T/g,"~");
-
+    
 	return text;
 }
 

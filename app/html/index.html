@@ -5,15 +5,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>markdown blog</title>
     <meta charset="utf-8">
+    <style type="text/css">
+    h4{font-size:14px; color:#333;}
+    a{color:#069;}
+    dl{ border:dashed 1px #666; font-size:14px; padding:4px; background:#FDFBDB;}
+    dt{clear:left; float:left; padding:4px 0;}
+    dd{ text-align:right;  padding:4px 0;font-size:12px; color:#666;}
+    </style>
 </head>
 
 <body>
-    <h1>首页</h1>
+    <h1>Article List</h1>
         <p>
-            <input type="button" value="更新" onclick="onupdate()">
+            <input type="button" value="update" onclick="onupdate()">
+            <input type="button" value="add" onclick="onadd()">
         </p>
     <content>
-    <li><a href='html/temp.md.html'>Markdown 简明语法手册</a></li><li><a href='html/xxy.md.html'>Cmd Markdown 简明语法手册</a></li>
+    <dl><dt><a href='html/temp.md.html'>Markdown 简明语法手册</a></dt><dd><a href='editor?name=temp.md'>edit</dd><dt><a href='html/xxy.md.html'>Markdown 简明语法手册</a></dt><dd><a href='editor?name=xxy.md'>edit</dd><dt><a href='html/uploadimg.md.html'>上传图片</a></dt><dd><a href='editor?name=uploadimg.md'>edit</dd><dt><a href='html/good.md.html'>Markdown 简明语法手册</a></dt><dd><a href='editor?name=good.md'>edit</dd></dl>
     </content>
 <script type="text/javascript">
     function onupdate() {
@@ -26,6 +34,9 @@
         };
         xmlhttp.open("POST","update",true);
         xmlhttp.send();
+    }
+    function onadd() {
+        window.location.href = '/editor';
     }
     window.onload = function() {
     };

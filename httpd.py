@@ -7,6 +7,8 @@ import urllib
 import codecs
 import glob
 import commands
+import time
+import re
 import BaseHTTPServer
 
 wwwpath = sys.argv[1]
@@ -70,33 +72,81 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(content)
 
     def do_POST(self):
-        datas = self.rfile.read(int(self.headers['content-length']))
-        queryParams = {}
-        if datas:
-            queryParams = transDicts(datas)
         content = ""
-        if self.path=='/savemd':
-            content = "保存失败"
-            if queryParams.has_key('name') and queryParams.has_key('mdtext'):
-                name = queryParams['name']
-                mdtext = queryParams['mdtext']
-                fn = "%s/md/%s" % (wwwpath,name)
-                fn = fn.replace("/",os.sep)
+        if self.path=='/uploadimg':
+            r,content = self.deal_post_img()
+            if r:
+                self.send_response(200)
+            else:
+                self.send_response(400)
+        else:
+            datas = self.rfile.read(int(self.headers['content-length']))
+            queryParams = {}
+            if datas:
+                queryParams = transDicts(datas)
+            if self.path=='/savemd':
+                content = "保存失败"
+                if queryParams.has_key('name') and queryParams.has_key('mdtext'):
+                    name = queryParams['name']
+                    mdtext = queryParams['mdtext']
+                    fn = "%s/md/%s" % (wwwpath,name)
+                    fn = fn.replace("/",os.sep)
 
-                f = codecs.open(fn, "w", "utf-8")
-                f.write(mdtext)
-                f.close()
+                    f = codecs.open(fn, "w", "utf-8")
+                    f.write(mdtext)
+                    f.close()
 
-                content = "保存成功"
-        elif self.path=='/update':
-            content = "更新成功"
-            cmd = "python %s/tohtml.py %s" % (pypath,wwwpath)
-            status, output = commands.getstatusoutput(cmd)
-            print(output)
+                    content = "保存成功"
+            elif self.path=='/update':
+                content = "更新成功"
+                cmd = "python %s/tohtml.py %s" % (pypath,wwwpath)
+                status, output = commands.getstatusoutput(cmd)
+                print(output)
+            self.send_response(200)
 
-        self.send_response(200)
         self.end_headers()
         self.wfile.write(content)
+
+    def deal_post_img(self):
+        boundary = self.headers.plisttext.split("=")[1]
+        remainbytes = int(self.headers['content-length'])
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        if not boundary in line:
+            return (False, "Content NOT begin with boundary")
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        fn = re.findall(r'Content-Disposition.*name="file"; filename="(.*)"', line)
+        if not fn:
+            return (False, "Can't find out file name...")
+        fn = "%s-%s" % (time.strftime("%Y-%m-%d"),fn[0])
+        fname = "%s/img/%s" % (wwwpath,fn)
+        fname = fname.replace("/",os.sep)
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        line = self.rfile.readline()
+        remainbytes -= len(line)
+        try:
+            out = open(fname, 'wb')
+        except IOError:
+            return (False, "Can't create file to write, do you have permission to write?")
+                 
+        preline = self.rfile.readline()
+        remainbytes -= len(preline)
+        while remainbytes > 0:
+            line = self.rfile.readline()
+            remainbytes -= len(line)
+            if boundary in line:
+                preline = preline[0:-1]
+                if preline.endswith('\r'):
+                    preline = preline[0:-1]
+                out.write(preline)
+                out.close()
+                return (True, "%s" % fn)
+            else:
+                out.write(preline)
+                preline = line
+        return (False, "Unexpect Ends of data.")
 
 a={'name':u'中文'}
 print(a)
