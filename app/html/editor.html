@@ -99,7 +99,7 @@
             if (xmlhttp.readyState==4 && xmlhttp.status==200) {
                 var imagename = xmlhttp.responseText;
                 var mdtext = window.editor_markdown.getValue();
-                mdtext = mdtext.replace(/!\[\]\(\)/g,'![](img/'+imagename+')');
+                mdtext = mdtext.replace(/!\[\]\(\)/g,'![](/img/'+imagename+')');
                 window.editor_markdown.setValue(mdtext);
                 content_preview();
                 alert('upload '+imagename+' success');
