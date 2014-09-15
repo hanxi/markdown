@@ -10,6 +10,7 @@ import commands
 import time
 import re
 import BaseHTTPServer
+import SocketServer
 
 wwwpath = sys.argv[1]
 pypath = os.path.realpath(sys.path[0]) 
@@ -148,8 +149,15 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 preline = line
         return (False, "Unexpect Ends of data.")
 
-a={'name':u'中文'}
-print(a)
-server = BaseHTTPServer.HTTPServer(("0.0.0.0", 8080), WebRequestHandler)
-server.serve_forever()
+class ThreadingServer(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+    pass
+
+def run(port=8080):
+    serveraddr = ('', port)
+    serv = ThreadingServer(serveraddr, WebRequestHandler)
+    print 'Server Started at port:', port
+    serv.serve_forever()
+
+if __name__=='__main__':
+    run()
 
