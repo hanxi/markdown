@@ -77,6 +77,14 @@
         if (r != null) return unescape(r[2]); return null;
     }
     function onsave() {
+        var md = _("mdname").value;
+        if (!md) {
+            alert('please input file name before save.');
+            return;
+        }
+        if (md.slice(-3)!=".md") {
+            md += ".md";
+        }
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState==4 && xmlhttp.status==200) {
@@ -85,10 +93,6 @@
         };
         xmlhttp.open("POST","savemd",true);
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        var md = _("mdname").value;
-        if (md.slice(-3)!=".md") {
-            md += ".md";
-        }
         var text = window.editor_markdown.getValue();
         var post = "name="+md+"&mdtext="+encodeURIComponent(text);
         xmlhttp.send(post);
